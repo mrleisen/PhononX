@@ -1,5 +1,4 @@
 
-import 'package:phononx_test/base/utilities/constants/ApiConstants.dart';
 import 'package:phononx_test/domain/usecases/userUseCases.dart';
 import 'package:phononx_test/pesentation/home/HomeScreenContract.dart';
 
@@ -16,7 +15,7 @@ class HomeScreenPresenter implements HomeScreenContractPresenter {
 
   @override
   attachView(HomeScreenContractView view) {
-    this._view = view;
+    _view = view;
   }
 
   @override

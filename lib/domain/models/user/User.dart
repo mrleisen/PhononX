@@ -1,4 +1,5 @@
 
+// this is the class for the abstraction of the user
 class User {
 
   String name;

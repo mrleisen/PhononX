@@ -1,4 +1,6 @@
 
+
+// this class helps to handle the getUsers request
 class GetUserResponseError {
 
   String? message;

@@ -3,6 +3,7 @@ import 'package:phononx_test/domain/models/user/User.dart';
 
 class GetUserResponse {
 
+  // if the api call to get users needs more properties, those properties should be added here
   String? name;
   String? avatarUrl;
   int? publicRepos;
@@ -27,6 +28,7 @@ class GetUserResponse {
     return data;
   }
 
+  // this method is useful to get the user from the response
   User getUser() => User(
     name: name!,
     avatarUrl: avatarUrl!,

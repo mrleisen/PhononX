@@ -18,16 +18,17 @@ class UserApiDataSourceImpl implements UserApiDataSource{
 
     final getUserRequest = GetUserRequest(username: username);
 
+    // asking the apiClient to start the get user call
     Tuple3<bool, GetUserResponse?, String> getUserResponseTuple = await _apiClient.getUser(getUserRequest);
 
     try{
-      if(getUserResponseTuple.item1){
+      if(getUserResponseTuple.item1){ // checking if the response was succesful
         return Tuple3(true, getUserResponseTuple.item2!.getUser(), "");
       }else{
-        return Tuple3(false, null, getUserResponseTuple.item3);
+        return Tuple3(false, null, getUserResponseTuple.item3); // returning the error the error from the apiClient
       }
     }catch(error){
-      return const Tuple3(false, null, ApiConstants.GET_USERS_FAILED_IN_DATA_SOURCE);
+      return const Tuple3(false, null, ApiConstants.GET_USERS_FAILED_IN_DATA_SOURCE); // returning the error when it fails here
     }
 
   }

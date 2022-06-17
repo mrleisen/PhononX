@@ -22,8 +22,7 @@ class _HomeScreenViewState extends State<HomeScreenView> implements HomeScreenCo
   bool _isUserSet = false;
   String _errorFromApi = "";
   String? _errorText;
-  User _userResult = User(name: "", avatarUrl: "", publicRepos: 0);
-  final myInputController = TextEditingController();
+  User _userResult = User(name: "", avatarUrl: "", publicRepos: 0); // this is an empty user
   late  HomeScreenPresenter _presenter;
 
   _HomeScreenViewState(){

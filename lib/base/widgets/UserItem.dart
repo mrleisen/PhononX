@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:phononx_test/domain/models/user/User.dart';
 
+// this widget draws an avatar, the user name and the amount of repositories
 class UserItem extends StatelessWidget {
 
   final User user;
@@ -13,8 +14,11 @@ class UserItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    // this constants are needed to set the size of various visual elements
     const _spaceBetweenUserNameAndAmountOfRepositories = 4.0;
     const _spaceBetweenUserAvatarAndName = 20.0;
+    const _sizeOfTheUserAvatar = 100.0;
+    const _sizeOfRoundedCorners = 10.0;
 
     return Card(
       child: Row(
@@ -22,12 +26,12 @@ class UserItem extends StatelessWidget {
 
           // this is the user avatar
           SizedBox(
-              width: 100,
-              height: 100,
+              width: _sizeOfTheUserAvatar,
+              height: _sizeOfTheUserAvatar,
               child: Image.network(user.avatarUrl)
           ),
 
-          SizedBox(width: _spaceBetweenUserAvatarAndName),
+          const SizedBox(width: _spaceBetweenUserAvatarAndName),
 
           // this is the user name and repositories
           Column(
@@ -42,10 +46,10 @@ class UserItem extends StatelessWidget {
 
               // this is the amount of repositories
               Container(
-                  padding: EdgeInsets.all(_spaceBetweenUserNameAndAmountOfRepositories),
+                  padding: const EdgeInsets.all(_spaceBetweenUserNameAndAmountOfRepositories),
                   child: Text("${user.publicRepos} repositories", style: const TextStyle(color: Colors.white)),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(_sizeOfRoundedCorners),
                       color: Colors.blue
                   )
               )

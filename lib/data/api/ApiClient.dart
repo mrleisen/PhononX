@@ -10,14 +10,16 @@ import 'package:tuple/tuple.dart';
 
 class ApiClient {
 
+  // this method returns a future with a boolean that tells the successful request, a getUserResponse with the actual response of the api
+  // and a string if the request fails
   Future<Tuple3<bool, GetUserResponse?, String>> getUser(GetUserRequest getUserRequest) async {
 
+    // this is the url with the parameter username
     final URL = Uri.parse("${ApiConstants.API_GET_USERS}"
         "${getUserRequest.username}"
     );
 
-    print(URL);
-
+    // implementing a try catch in order to catch any error trying in the request and decoding the response
     try{
       final response = await http.get(
           URL,
@@ -26,14 +28,11 @@ class ApiClient {
           }
       );
 
-      print("ApiClient getUser response: $response");
-      print("ApiClient getUser response.statusCode: ${response.statusCode}");
-      print("ApiClient getUser response.body: ${response.body}");
-
-      if(response.statusCode == 200){
+      if(response.statusCode == 200){ // status code 200 means the request was successful
+        // converting the response to JSON first an then to a getUserResponse object
         GetUserResponse getUserResponse = GetUserResponse.fromJson(jsonDecode(response.body));
         return Tuple3(true, getUserResponse, "");
-      }else if(response.statusCode == 404){
+      }else if(response.statusCode == 404){ // status code 404 means that the api request failed and it contains an message
         GetUserResponseError getUserResponseError = GetUserResponseError.fromJson(jsonDecode(response.body));
         return Tuple3(false, null, getUserResponseError.message!);
       }else{

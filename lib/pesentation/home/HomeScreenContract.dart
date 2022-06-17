@@ -1,6 +1,8 @@
 
 import 'package:phononx_test/domain/models/user/User.dart';
 
+// this class helps to connect (to present) the view to the presenter and viceversa
+
 abstract class HomeScreenContractView {
   showLoading();
   hideLoading();
