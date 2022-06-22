@@ -4,4 +4,5 @@ import 'package:tuple/tuple.dart';
 
 abstract class UserUseCases {
   Future<Tuple3<bool, User?, String>> getUser(String username);
+  Future<Tuple3<bool, List<User>?, String>> searchUsers(String query);
 }

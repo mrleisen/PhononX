@@ -4,6 +4,8 @@ import 'package:phononx_test/data/api/ApiClient.dart';
 import 'package:phononx_test/domain/datasources/UserApiDataSource.dart';
 import 'package:phononx_test/domain/models/api/GetUserRequest.dart';
 import 'package:phononx_test/domain/models/api/GetUserResponse.dart';
+import 'package:phononx_test/domain/models/api/SearchUsersRequest.dart';
+import 'package:phononx_test/domain/models/api/SearchUsersResponse.dart';
 import 'package:phononx_test/domain/models/user/User.dart';
 import 'package:tuple/tuple.dart';
 
@@ -31,6 +33,25 @@ class UserApiDataSourceImpl implements UserApiDataSource{
       return const Tuple3(false, null, ApiConstants.GET_USERS_FAILED_IN_DATA_SOURCE); // returning the error when it fails here
     }
 
+  }
+
+  @override
+  Future<Tuple3<bool, List<User>?, String>> searchUsers(String query) async {
+
+    final searchUsersRequest = SearchUsersRequest(query: query);
+
+    // asking the apiClient to start the get user call
+    Tuple3<bool, SearchUsersResponse?, String> searchUsersResponseTuple = await _apiClient.searchUsers(searchUsersRequest);
+
+    try{
+      if(searchUsersResponseTuple.item1){ // checking if the response was succesful
+        return Tuple3(true, searchUsersResponseTuple.item2!.getUsers(), "");
+      }else{
+        return Tuple3(false, null, searchUsersResponseTuple.item3); // returning the error the error from the apiClient
+      }
+    }catch(error){
+      return const Tuple3(false, null, ApiConstants.GET_USERS_FAILED_IN_DATA_SOURCE); // returning the error when it fails here
+    }
   }
 
 }

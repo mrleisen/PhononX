@@ -14,4 +14,8 @@ class UserUseCasesImpl implements UserUseCases {
   Future<Tuple3<bool, User?, String>> getUser(String username) async =>
       await _userRepository.getUser(username);
 
+  @override
+  Future<Tuple3<bool, List<User>?, String>> searchUsers(String query) async =>
+      await _userRepository.searchUsers(query);
+
 }

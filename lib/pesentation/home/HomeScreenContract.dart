@@ -6,12 +6,13 @@ import 'package:phononx_test/domain/models/user/User.dart';
 abstract class HomeScreenContractView {
   showLoading();
   hideLoading();
-  setUser(User user);
   showError(String errorMessage);
+  setUsers(List<User> users);
 }
 
 abstract class HomeScreenContractPresenter {
   attachView(HomeScreenContractView view);
   detachView();
-  getUser(String username);
+  searchUsers(String query);
+  Future<User> getUser(User user);
 }
