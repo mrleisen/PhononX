@@ -1,4 +1,6 @@
 
+import 'dart:async';
+import 'package:phononx_test/domain/models/user/User.dart';
 import 'package:phononx_test/domain/usecases/userUseCases.dart';
 import 'package:phononx_test/pesentation/home/HomeScreenContract.dart';
 
@@ -8,8 +10,8 @@ class HomeScreenPresenter implements HomeScreenContractPresenter {
   HomeScreenContractView? _view;
 
   HomeScreenPresenter(
-    UserUseCases userUseCases
-  ){
+      UserUseCases userUseCases
+      ){
     _userUseCases = userUseCases;
   }
 
@@ -24,19 +26,28 @@ class HomeScreenPresenter implements HomeScreenContractPresenter {
   }
 
   @override
-  getUser(String username) async {
+  searchUsers(String query) async {
 
     _view?.showLoading();
-    final userResult = await _userUseCases.getUser(username);
-    if(userResult.item1){
+    final usersResult = await _userUseCases.searchUsers(query);
+    if(usersResult.item1){
       if(_isViewAttached()){
         _view?.hideLoading();
-        _view?.setUser(userResult.item2!);
+        _view?.setUsers(usersResult.item2!);
       }
     }else{
       _view?.hideLoading();
-      _view?.showError(userResult.item3);
+      _view?.showError(usersResult.item3);
     }
+  }
+
+  @override
+  Future<User> getUser(User user) async {
+    final userResult = await _userUseCases.getUser(user.name);
+    if(userResult.item1){
+      return userResult.item2!;
+    }
+    return user;
   }
 
   // private functions
