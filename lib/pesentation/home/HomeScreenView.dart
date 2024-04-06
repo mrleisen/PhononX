@@ -2,10 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:phononx_test/base/utilities/DependencyInjection.dart';
 import 'package:phononx_test/base/utilities/constants/VisualConstants.dart';
-import 'package:phononx_test/base/widgets/UserItem.dart';
 import 'package:phononx_test/domain/models/user/User.dart';
 import 'package:phononx_test/pesentation/home/HomeScreenContract.dart';
 import 'package:phononx_test/pesentation/home/HomeScreenPresenter.dart';
+
+import '../widgets/UserItem.dart';
 
 class HomeScreenView extends StatefulWidget {
 
@@ -72,20 +73,22 @@ class _HomeScreenViewState extends State<HomeScreenView> implements HomeScreenCo
                       ? Text(_errorFromApi) // show the error
                       : Visibility(
                           visible: _areUsersSet,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: _usersResult.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return FutureBuilder<User>(
-                                    future: _presenter.getUser(_usersResult[index]),
-                                    builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
-                                      if(snapshot.hasData){
-                                        return UserItem(user: snapshot.data!);
+                          child: Expanded(
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                itemCount: _usersResult.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return FutureBuilder<User>(
+                                      future: _presenter.getUser(_usersResult[index]),
+                                      builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+                                        if(snapshot.hasData){
+                                          return UserListItemWidget(user: snapshot.data!);
+                                        }
+                                        return const Center(child: CircularProgressIndicator());
                                       }
-                                      return const Center(child: CircularProgressIndicator());
-                                    }
-                                );
-                              }
+                                  );
+                                }
+                            ),
                           )
                         )
 

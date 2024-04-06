@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:phononx_test/domain/models/user/User.dart';
 
 // this widget draws an avatar, the user name and the amount of repositories
-class UserItem extends StatelessWidget {
+class UserListItemWidget extends StatelessWidget {
 
   final User user;
 
-  const UserItem({
+  const UserListItemWidget({
     required this.user,
     Key? key}) : super(key: key);
 
@@ -47,11 +47,11 @@ class UserItem extends StatelessWidget {
               // this is the amount of repositories
               Container(
                   padding: const EdgeInsets.all(_spaceBetweenUserNameAndAmountOfRepositories),
-                  child: Text("${user.publicRepos} repositories", style: const TextStyle(color: Colors.white)),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(_sizeOfRoundedCorners),
                       color: Colors.blue
-                  )
+                  ),
+                  child: Text("${user.publicRepos} repositories", style: const TextStyle(color: Colors.white))
               )
             ]
           )
