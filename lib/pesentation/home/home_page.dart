@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:phononx_test/pesentation/home/home_viewmodel.dart';
+import 'package:phononx_test/base/async_response.dart';
 import 'package:provider/provider.dart';
 
-import '../../base/async_response.dart';
-import '../widgets/user_list_item.dart';
+import '../widgets/search_users_input_field.dart';
+import '../widgets/users_list.dart';
+import 'home_viewmodel.dart';
 
 class HomePage extends StatefulWidget {
 
@@ -17,64 +18,89 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
 
+  late HomeViewModel _viewModel;
   final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
+
+  final spaceBetweenScreenAndContent = 10.0;
+  final paddingForInputField = 10.0;
+  final spaceBetweenScreenUsers = 10.0;
+  final spaceBetweenUsersAndLoadMore = 10.0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _viewModel = Provider.of<HomeViewModel>(context, listen: false);
+      _scrollController.addListener(_onScrollAtTheEndOfTheList);
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _scrollController.removeListener(_onScrollAtTheEndOfTheList);
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScrollAtTheEndOfTheList() {
+    if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
+      _viewModel.loadMoreUsers(_controller.text);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
 
-    final viewModel = Provider.of<HomeViewModel>(context, listen: false);
-    const spaceBetweenScreenAndContent = 10.0;
-    const paddingForInputField = 10.0;
-    const spaceBetweenScreenUsers = 10.0;
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Search Users'),
+        automaticallyImplyLeading: false,
       ),
-      body: Container(
-          margin: const EdgeInsets.all(spaceBetweenScreenAndContent),
-          child: Column(
-              children: [
+      body: Consumer<HomeViewModel>(
+        builder: (context, viewModel, child) {
+          return Container(
+              margin: EdgeInsets.all(spaceBetweenScreenAndContent),
+              child: Column(
+                  children: [
 
-                // this is the search box
-                TextFormField(
-                  controller: _controller,
-                  decoration: const InputDecoration(
-                      hintText: 'Search users',
-                      suffixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(),
-                      contentPadding: EdgeInsets.all(paddingForInputField),
-                  ),
-                  textInputAction: TextInputAction.search,
-                  onFieldSubmitted: (value) {
-                    viewModel.searchUsersByPage(_controller.text);
-                  },
-                ),
-
-                // this is a space
-                const SizedBox(height: spaceBetweenScreenAndContent),
-
-                // this is the user section
-                Consumer<HomeViewModel>(
-                  builder: (context, userProvider, child) {
-                    return userProvider.searchUsersResponse is Loading
-                        ? const CircularProgressIndicator()
-                        : userProvider.users.isEmpty
-                        ? const Text('No users found.')
-                        : Expanded(child: ListView.separated(
-                      itemCount: userProvider.users.length,
-                      separatorBuilder: (context, index) => const SizedBox(height: spaceBetweenScreenUsers),
-                      itemBuilder: (context, index) {
-                        final user = userProvider.users[index];
-                        return UserListItemWidget(user: user);
-                      },
+                    SearchUsersInputField(
+                      controller: _controller,
+                      paddingForInputField: paddingForInputField,
+                      searchUsersByPage: viewModel.searchUsersByPage,
                     ),
-                    );
-                  },
-                ),
-              ]
-          )
-      )
+
+                    SizedBox(height: spaceBetweenScreenAndContent),
+
+                    Expanded(
+                      child: viewModel.searchUsersResponse is Loading
+                          ? const Center(child: CircularProgressIndicator())
+                          :  UsersList(
+                                scrollController: _scrollController,
+                                spaceBetweenScreenUsers: spaceBetweenScreenUsers,
+                                users: viewModel.users,
+                              ),
+                    ),
+
+                    if(viewModel.loadMoreUsersResponse is Loading)
+                      Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                              top: spaceBetweenUsersAndLoadMore * 2,
+                              bottom: spaceBetweenUsersAndLoadMore
+                          ),
+                          child: const CircularProgressIndicator(),
+                        ),
+                      ),
+
+                  ]
+              )
+          );
+          },
+      ),
     );
   }
+
+
 }
