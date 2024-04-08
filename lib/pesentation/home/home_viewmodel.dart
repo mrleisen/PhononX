@@ -5,6 +5,7 @@ import '../../domain/models/my_user.dart';
 import '../../domain/usecases/users_use_cases.dart';
 
 class HomeViewModel extends ChangeNotifier {
+
   UsersUseCases _usersUseCases;
   HomeViewModel(this._usersUseCases);
 
@@ -30,18 +31,21 @@ class HomeViewModel extends ChangeNotifier {
       if (users != null) {
         _searchUsersResponse = Init();
         _users = users;
-        notifyListeners();
       } else {
-        _searchUsersResponse = Error('Failed to search users');
-        notifyListeners();
+        _searchUsersResponse = Error('No users found');
       }
     } catch (e) {
       _searchUsersResponse = Error('Failed to search users, error: $e');
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   Future<void> loadMoreUsers(String query) async {
+
+    if (_loadMoreUsersResponse is Loading) {
+      return;
+    }
+
     _loadMoreUsersResponse = Loading();
     notifyListeners();
 
@@ -51,15 +55,13 @@ class HomeViewModel extends ChangeNotifier {
       if (users != null) {
         _loadMoreUsersResponse = Init();
         _users.addAll(users);
-        notifyListeners();
       } else {
-        _loadMoreUsersResponse = Error('Failed to load more users');
-        notifyListeners();
+        _loadMoreUsersResponse = Error('No more users found');
       }
     } catch (e) {
       _loadMoreUsersResponse = Error('Failed to load more users, error: $e');
-      notifyListeners();
     }
+    notifyListeners();
   }
 
   Future<List<MyUser>?> _searchUsersByPage(String query, int page) async {

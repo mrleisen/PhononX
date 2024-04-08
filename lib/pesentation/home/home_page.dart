@@ -76,23 +76,28 @@ class _HomePageState extends State<HomePage> {
                     Expanded(
                       child: viewModel.searchUsersResponse is Loading
                           ? const Center(child: CircularProgressIndicator())
-                          :  UsersList(
-                                scrollController: _scrollController,
-                                spaceBetweenScreenUsers: spaceBetweenScreenUsers,
-                                users: viewModel.users,
-                              ),
+                          :  viewModel.searchUsersResponse is Error
+                          ? Center(child: Text((viewModel.searchUsersResponse as Error).message))
+                          : UsersList(
+                        scrollController: _scrollController,
+                        spaceBetweenScreenUsers: spaceBetweenScreenUsers,
+                        users: viewModel.users,
+                      ),
                     ),
 
-                    if(viewModel.loadMoreUsersResponse is Loading)
-                      Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(
-                              top: spaceBetweenUsersAndLoadMore * 2,
-                              bottom: spaceBetweenUsersAndLoadMore
-                          ),
-                          child: const CircularProgressIndicator(),
+                    Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(
+                            top: spaceBetweenUsersAndLoadMore * 2,
+                            bottom: spaceBetweenUsersAndLoadMore
                         ),
+                        child: viewModel.loadMoreUsersResponse is Loading
+                            ? const CircularProgressIndicator()
+                            : viewModel.loadMoreUsersResponse is Error
+                            ? Text((viewModel.loadMoreUsersResponse as Error).message)
+                            : const SizedBox.shrink()
                       ),
+                    ),
 
                   ]
               )
